@@ -18,7 +18,10 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
 
     ArrayList<AddAppNote> items = new ArrayList<AddAppNote>();
 
+    OnItemClickListener listener;
+
     int layoutType = 0;
+    int adapterPosition = 0;
 
     @NonNull
     @Override
@@ -34,15 +37,29 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
         AddAppNote item = items.get(position);
         holder.setItem(item);
         holder.setLayoutType(layoutType);
+        adapterPosition = position;
     }
 
     @Override
     public int getItemCount() {
-
-        //return 0;
-        return items.size();   //이거 결과가 어떻게 되는지 확인
+        return items.size();
     }
 
+    public void addItem(AddAppNote item) {
+        items.add(item);
+    }
+
+    public void setItems(ArrayList<AddAppNote> items) {
+        this.items = items;
+    }
+
+    public AddAppNote getItem(int position) {
+        return items.get(position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -62,6 +79,13 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
             appImage = itemView.findViewById(R.id.app_image);
             appName = itemView.findViewById(R.id.app_name);
             appFunc = itemView.findViewById(R.id.app_func);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
 
         public void setItem(AddAppNote item) {

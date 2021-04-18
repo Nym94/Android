@@ -11,10 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class Fragment_AddApp extends Fragment {
+public class Fragment1AddApp extends Fragment {
 
-    RecyclerView recyclerView;
-    AddAppNoteAdapter addAppAdapter;
+
 
     @Nullable
     @Override
@@ -23,13 +22,33 @@ public class Fragment_AddApp extends Fragment {
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_add_app, container, false);
 
-        recyclerView = rootView.findViewById(R.id.recyclerApp);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        initUI(rootView);
 
         return rootView;
     }
 
+    private void initUI(ViewGroup rootView) {
+        RecyclerView recyclerView;
+        recyclerView = rootView.findViewById(R.id.recyclerApp);
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        recyclerView.setLayoutManager(layoutManager);   // it decides recyclerView's layout form
+
+        AddAppNoteAdapter addAppNoteAdapter = new AddAppNoteAdapter();
+        recyclerView.setAdapter(addAppNoteAdapter);     // 이 함수 위치에 따른 결과 확인
+
+        /*
+        addAppNoteAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick() {
+                AddAppNote item = addAppNoteAdapter.getItem(position);
+
+            }
+        });
+        */
+
+
+
+    }
 }
