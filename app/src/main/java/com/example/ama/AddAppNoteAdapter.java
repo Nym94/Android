@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,30 +15,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.ViewHolder> {
 
     ArrayList<AddAppNote> items = new ArrayList<AddAppNote>();
 
     OnItemClickListener listener;
 
-    int layoutType = 0;
-    int adapterPosition = 0;
-
     @NonNull
     @Override
     public AddAppNoteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Log.d("Log", "onCreate");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.add_app_item, parent, false);
 
-        return new ViewHolder(itemView);
+        return new ViewHolder(itemView, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        //Log.d("Log", "onBind");
         AddAppNote item = items.get(position);
         holder.setItem(item);
-        holder.setLayoutType(layoutType);
-        adapterPosition = position;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -45,21 +48,11 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
         return items.size();
     }
 
-    public void addItem(AddAppNote item) {
-        items.add(item);
-    }
+    public void addItem(AddAppNote item) { items.add(item); }
 
-    public void setItems(ArrayList<AddAppNote> items) {
-        this.items = items;
-    }
+    public void setItems(ArrayList<AddAppNote> items) { this.items = items; }
 
-    public AddAppNote getItem(int position) {
-        return items.get(position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
+    public AddAppNote getItem(int position) { return items.get(position); }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -70,7 +63,7 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
         TextView appName;
         TextView appFunc;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
 
             emptyAppLayout = itemView.findViewById(R.id.emptyAppLayout);
@@ -83,7 +76,8 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    //if (listener != null)
+                    listener.onItemClick(getAdapterPosition());
                 }
             });
         }

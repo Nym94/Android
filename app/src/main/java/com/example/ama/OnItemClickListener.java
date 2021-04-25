@@ -1,5 +1,5 @@
 package com.example.ama;
 
 public interface OnItemClickListener {
-    public void onItemClick();
+    public void onItemClick(int position);
 }
