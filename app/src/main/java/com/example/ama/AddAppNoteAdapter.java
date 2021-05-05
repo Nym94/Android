@@ -6,14 +6,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.ViewHolder> {
@@ -35,7 +32,7 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //Log.d("Log", "onBind");
-        AddAppNote item = items.get(position);
+        AddAppNote item = getItem(position);
         holder.setItem(item);
     }
 
@@ -59,9 +56,9 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
         LinearLayout emptyAppLayout;
         LinearLayout setAppLayout;
 
-        ImageView appImage;
-        TextView appName;
-        TextView appFunc;
+        ImageView AppIcon;
+        TextView AppName;
+        TextView AppFunc;
 
         public ViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
@@ -69,9 +66,9 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
             emptyAppLayout = itemView.findViewById(R.id.emptyAppLayout);
             setAppLayout = itemView.findViewById(R.id.setAppLayout);
 
-            appImage = itemView.findViewById(R.id.app_image);
-            appName = itemView.findViewById(R.id.app_name);
-            appFunc = itemView.findViewById(R.id.app_func);
+            AppIcon = itemView.findViewById(R.id.SelectedAppIcon);
+            AppName = itemView.findViewById(R.id.SelectedAppName);
+            AppFunc = itemView.findViewById(R.id.SelectedAppFunc);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,9 +80,9 @@ public class AddAppNoteAdapter extends RecyclerView.Adapter<AddAppNoteAdapter.Vi
         }
 
         public void setItem(AddAppNote item) {
-            //appImage.setImageResource(item.getAppImage());
-            appName.setText(item.getAppName());
-            appFunc.setText(item.getAppFunc());
+            //appIcon.setImageResource(item.getAppIcon());
+            AppName.setText(item.getSelectedAppName());
+            AppFunc.setText(item.getSelectedAppFunc());
         }
 
         public void setLayoutType(int layoutType) {

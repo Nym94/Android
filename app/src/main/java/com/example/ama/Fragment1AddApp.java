@@ -28,7 +28,7 @@ public class Fragment1AddApp extends Fragment {
 
     private void initUI(ViewGroup rootView) {
         RecyclerView recyclerView;
-        recyclerView = rootView.findViewById(R.id.recyclerApp);
+        recyclerView = rootView.findViewById(R.id.recycleAddApp);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);   // it decides recyclerView's layout form(Linear layout).
@@ -50,7 +50,7 @@ public class Fragment1AddApp extends Fragment {
                 Toast.makeText(getContext(), "아이템#" + position + " 선택됨", Toast.LENGTH_LONG).show();
 
                 // Switch to fragment2, and send "item" of fragment1
-                Fragment fragment2 = new Fragment2SelectApp();
+                Fragment fragment2 = new Fragment2InstalledAppList();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment2).commit();
                 //getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment2).commit();
 

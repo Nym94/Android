@@ -16,7 +16,7 @@
         android:text="편집" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerApp"
+        android:id="@+id/recycleAddApp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

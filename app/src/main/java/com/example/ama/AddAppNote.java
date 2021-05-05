@@ -2,15 +2,15 @@ package com.example.ama;
 
 public class AddAppNote {
     int _id;
-    String appImage;
-    String appName;
-    String appFunc;
+    String selectedAppIcon;
+    String selectedAppName;
+    String selectedAppFunc;
 
-    public AddAppNote(int _id, String appImage, String appName, String appFunc) {
+    public AddAppNote(int _id, String appIcon, String appName, String appFunc) {
         this._id = _id;
-        this.appImage = appImage;
-        this.appName = appName;
-        this.appFunc = appFunc;
+        this.selectedAppIcon = appIcon;
+        this.selectedAppName = appName;
+        this.selectedAppFunc = appFunc;
     }
 
     public int get_id() {
@@ -21,27 +21,27 @@ public class AddAppNote {
         this._id = _id;
     }
 
-    public String getAppImage() {
-        return appImage;
+    public String getSelectedAppIcon() {
+        return selectedAppIcon;
     }
 
-    public void setAppImage(String appImage) {
-        this.appImage = appImage;
+    public void setSelectedAppIcon(String appIcon) {
+        this.selectedAppIcon = appIcon;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getSelectedAppName() {
+        return selectedAppName;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setSelectedAppName(String appName) {
+        this.selectedAppName = appName;
     }
 
-    public String getAppFunc() {
-        return appFunc;
+    public String getSelectedAppFunc() {
+        return selectedAppFunc;
     }
 
-    public void setAppFunc(String appFunc) {
-        this.appFunc = appFunc;
+    public void setSelectedAppFunc(String appFunc) {
+        this.selectedAppFunc = appFunc;
     }
 }
