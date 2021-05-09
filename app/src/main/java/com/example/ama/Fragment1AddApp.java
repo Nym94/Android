@@ -47,7 +47,9 @@ public class Fragment1AddApp extends Fragment {
                 AddAppNote item = addAppNoteAdapter.getItem(position);
                 //addAppNoteAdapter.addItem(new AddAppNote(0, "null", "null", "null"));
                 //addAppNoteAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "아이템#" + position + " 선택됨", Toast.LENGTH_LONG).show();
+
+
+                //Toast.makeText(getContext(), "아이템#" + position + " 선택됨", Toast.LENGTH_LONG).show();
 
                 // Switch to fragment2, and send "item" of fragment1
                 Fragment fragment2 = new Fragment2InstalledAppList();
