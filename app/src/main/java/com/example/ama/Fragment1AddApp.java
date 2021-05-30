@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,8 +28,7 @@ public class Fragment1AddApp extends Fragment {
     }
 
     private void initUI(ViewGroup rootView) {
-        RecyclerView recyclerView;
-        recyclerView = rootView.findViewById(R.id.recycleAddApp);
+        RecyclerView recyclerView = rootView.findViewById(R.id.recycleAddApp);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);   // it decides recyclerView's layout form(Linear layout).
@@ -48,14 +48,16 @@ public class Fragment1AddApp extends Fragment {
                 //addAppNoteAdapter.addItem(new AddAppNote(0, "null", "null", "null"));
                 //addAppNoteAdapter.notifyDataSetChanged();
 
-
                 //Toast.makeText(getContext(), "아이템#" + position + " 선택됨", Toast.LENGTH_LONG).show();
 
-                // Switch to fragment2, and send "item" of fragment1
+                // Change to fragment2, and send "item" of fragment1
                 Fragment fragment2 = new Fragment2InstalledAppList();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment2).commit();
-                //getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment2).commit();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
+                transaction.replace(R.id.container, fragment2);
+                transaction.addToBackStack(null);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.commit();
             }
         });
     }

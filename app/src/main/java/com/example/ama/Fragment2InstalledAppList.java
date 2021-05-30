@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,7 +44,7 @@ public class Fragment2InstalledAppList extends Fragment {
         InstalledAppNoteAdapter installedAppNoteAdapter = new InstalledAppNoteAdapter();
 
         PackageManager pm = getActivity().getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(0);
+        //List<ApplicationInfo> packages = pm.getInstalledApplications(0);
 
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -56,23 +57,12 @@ public class Fragment2InstalledAppList extends Fragment {
 
         //for(ApplicationInfo appInfo : packages) {
         for(ResolveInfo resInfo : resolveInfos) {
-            //if ((resInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                //appIcon = getActivity().getPackageManager().getApplicationIcon(appInfo);
-                appIcon = resInfo.loadIcon(pm);
-                appName = resInfo.loadLabel(pm).toString();
 
-            /*
-            try {
-                appName = getActivity().getPackageManager().getApplicationLabel(
-                        getActivity().getPackageManager().getApplicationInfo(appInfo.packageName, 0)//PackageManager.GET_UNINSTALLED_PACKAGES)
-                ).toString();
-            } catch (PackageManager.NameNotFoundException e) {
-            }
-            */
+            appIcon = resInfo.loadIcon(pm);
+            appName = resInfo.loadLabel(pm).toString();
 
-                installedAppNoteAdapter.addItem(new InstalledAppNote(id, appIcon, appName));
-                id++;
-            //}
+            installedAppNoteAdapter.addItem(new InstalledAppNote(id, appIcon, appName));
+            id++;
         }
 
         Toast.makeText(getContext(), "The number of app : " + id, Toast.LENGTH_LONG).show();
@@ -80,8 +70,20 @@ public class Fragment2InstalledAppList extends Fragment {
 
         recyclerView.setAdapter(installedAppNoteAdapter);
 
+        installedAppNoteAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                InstalledAppNote item = installedAppNoteAdapter.getItem(position);
 
+                // Change to fragment3, and send "item" of fragment2
+                Fragment fragment3 = new Fragment3MainMenu(item);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-
+                transaction.replace(R.id.container, fragment3);
+                transaction.addToBackStack(null);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.commit();
+            }
+        });
     }
 }

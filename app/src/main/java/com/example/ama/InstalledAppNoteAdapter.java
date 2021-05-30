@@ -47,6 +47,8 @@ public class InstalledAppNoteAdapter extends RecyclerView.Adapter<InstalledAppNo
         items.add(item);
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) { this.listener = listener; }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView AppIcon;
@@ -57,6 +59,13 @@ public class InstalledAppNoteAdapter extends RecyclerView.Adapter<InstalledAppNo
 
             AppIcon = itemView.findViewById(R.id.installedAppIcon);
             AppName = itemView.findViewById(R.id.installedAppName);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(getAdapterPosition());
+                }
+            });
         }
 
         public void setItem(InstalledAppNote item) {

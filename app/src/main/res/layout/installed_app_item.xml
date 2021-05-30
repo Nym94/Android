@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
-            android:text="TextView" />
+            android:text="App name" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
