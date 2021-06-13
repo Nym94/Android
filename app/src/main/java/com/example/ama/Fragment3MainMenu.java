@@ -20,8 +20,6 @@ import androidx.fragment.app.Fragment;
 
 public class Fragment3MainMenu extends Fragment {
 
-    InstalledAppNote selectedAppInfo;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,9 +30,11 @@ public class Fragment3MainMenu extends Fragment {
         return rootView;
     }
 
+    /* // Only use basic construct in fragment, because overloaded construct not guaranteed to call.
     public Fragment3MainMenu(InstalledAppNote selectedAppInfo) {
         this.selectedAppInfo = selectedAppInfo;
     }
+    */
 
     public void initUI(ViewGroup rootView) {
 
@@ -43,6 +43,8 @@ public class Fragment3MainMenu extends Fragment {
         LinearLayout layout_setPassword = rootView.findViewById(R.id.layout_set_password);
         Switch switch_setPassword = rootView.findViewById(R.id.switch_set_password);
 
+        Bundle bundleFromFragment2 = getArguments();
+        InstalledAppNote selectedAppInfo = (InstalledAppNote) bundleFromFragment2.getParcelable("selectedAppInfo");
 
         appIcon.setImageDrawable(selectedAppInfo.getInstalledAppIcon());
         appName.setText(selectedAppInfo.getInstalledAppName());

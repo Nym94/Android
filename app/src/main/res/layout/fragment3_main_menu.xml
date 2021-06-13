@@ -47,8 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:foreground="?android:attr/selectableItemBackground">
 
                 <TextView
                     android:id="@+id/textView_set_password"

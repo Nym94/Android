@@ -76,8 +76,17 @@ public class Fragment2InstalledAppList extends Fragment {
                 InstalledAppNote item = installedAppNoteAdapter.getItem(position);
 
                 // Change to fragment3, and send "item" of fragment2
-                Fragment fragment3 = new Fragment3MainMenu(item);
+                Fragment fragment3 = new Fragment3MainMenu();
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+                //Intent intentToFragment3 = new Intent();
+                //intentToFragment3.putExtra("selectedAppInfo", item);
+
+                Bundle bundleToFragment3 = new Bundle();
+                //bundleForFragment3.putParcelable("selectedAppInfo", intentToFragment3.getParcelableExtra("selectedAppInfo"));
+                bundleToFragment3.putParcelable("selectedAppInfo", item);
+
+                fragment3.setArguments(bundleToFragment3);
 
                 transaction.replace(R.id.container, fragment3);
                 transaction.addToBackStack(null);
