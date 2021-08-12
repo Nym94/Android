@@ -1,12 +1,10 @@
 package com.example.ama;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -16,7 +14,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class Fragment3MainMenu extends Fragment {
 
@@ -30,7 +30,7 @@ public class Fragment3MainMenu extends Fragment {
         return rootView;
     }
 
-    /* // Only use basic construct in fragment, because overloaded construct not guaranteed to call.
+    /* Only use basic construct in fragment, because overloaded construct not guaranteed to call.
     public Fragment3MainMenu(InstalledAppNote selectedAppInfo) {
         this.selectedAppInfo = selectedAppInfo;
     }
@@ -61,6 +61,24 @@ public class Fragment3MainMenu extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (switch_setPassword.isChecked() == true) {
                     Toast.makeText(getContext(), "set password", Toast.LENGTH_LONG).show();
+
+                    // Show the dialog for set the app's password
+                    DialogSetAppPassword dialogSAP = new DialogSetAppPassword();
+                    dialogSAP.setOnDialogButtonClickListener(new OnSetPasswordButtonClickListener() {
+                        @Override
+                        public void onPositiveButtonClick() {
+                            Toast.makeText(getContext(), "yeeeeesss", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onNegativeButtonClick() {
+
+                        }
+                    });
+                    dialogSAP.show(getActivity().getSupportFragmentManager(), "setAppPassword");
+                }
+                else if (switch_setPassword.isChecked() == false) {
+
                 }
             }
         });
