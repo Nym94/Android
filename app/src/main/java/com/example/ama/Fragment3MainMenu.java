@@ -1,5 +1,9 @@
 package com.example.ama;
 
+import android.accessibilityservice.AccessibilityService;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,14 +44,22 @@ public class Fragment3MainMenu extends Fragment {
 
         ImageView appIcon = rootView.findViewById(R.id.SelectedAppIcon2);
         TextView appName = rootView.findViewById(R.id.SelectedAppName2);
-        LinearLayout layout_setPassword = rootView.findViewById(R.id.layout_set_password);
-        Switch switch_setPassword = rootView.findViewById(R.id.switch_set_password);
 
         Bundle bundleFromFragment2 = getArguments();
         InstalledAppNote selectedAppInfo = (InstalledAppNote) bundleFromFragment2.getParcelable("selectedAppInfo");
 
         appIcon.setImageDrawable(selectedAppInfo.getInstalledAppIcon());
         appName.setText(selectedAppInfo.getInstalledAppName());
+
+        funcdef_SetPassword(rootView, selectedAppInfo);
+    }
+
+    public void funcdef_SetPassword(ViewGroup rootView, InstalledAppNote selectedAppInfo) {
+
+        LinearLayout layout_setPassword = rootView.findViewById(R.id.layout_set_password);
+        Switch switch_setPassword = rootView.findViewById(R.id.switch_set_password);
+
+        AccessibilityService serviceAppClickListener = new ServiceAppClickListener();
 
         layout_setPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,24 +72,32 @@ public class Fragment3MainMenu extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (switch_setPassword.isChecked() == true) {
-                    Toast.makeText(getContext(), "set password", Toast.LENGTH_LONG).show();
-
                     // Show the dialog for set the app's password
                     DialogSetAppPassword dialogSAP = new DialogSetAppPassword();
                     dialogSAP.setOnDialogButtonClickListener(new OnSetPasswordButtonClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
-                            Toast.makeText(getContext(), "yeeeeesss", Toast.LENGTH_LONG).show();
+
+
+                            Intent intentForService = new Intent();
+                            intentForService.putExtra("selectedAppPackageName", selectedAppInfo);
+
+                            serviceAppClickListener.startService(intentForService);
                         }
 
                         @Override
                         public void onNegativeButtonClick() {
+                            Intent intent = new Intent();
 
+                            serviceAppClickListener.stopService(intent);
+
+                            switch_setPassword.setChecked(false);
                         }
                     });
                     dialogSAP.show(getActivity().getSupportFragmentManager(), "setAppPassword");
                 }
-                else if (switch_setPassword.isChecked() == false) {
+
+                if (switch_setPassword.isChecked() == false) {
 
                 }
             }

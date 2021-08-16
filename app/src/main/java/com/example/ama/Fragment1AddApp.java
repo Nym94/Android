@@ -1,5 +1,6 @@
 package com.example.ama;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,6 @@ public class Fragment1AddApp extends Fragment {
         AddAppNoteAdapter addAppNoteAdapter = new AddAppNoteAdapter();
 
         addAppNoteAdapter.addItem(new AddAppNote(0, "null", "null", "null"));
-        //addAppNoteAdapter.addItem(new AddAppNote(0, "null", "null", "null"));
-        //addAppNoteAdapter.addItem(new AddAppNote(0, "null", "null", "null"));
 
         recyclerView.setAdapter(addAppNoteAdapter);     // 이 함수 위치에 따른 결과 확인
 

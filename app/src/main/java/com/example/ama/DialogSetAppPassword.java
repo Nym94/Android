@@ -26,14 +26,15 @@ public class DialogSetAppPassword extends DialogFragment {
         //return super.onCreateDialog(savedInstanceState);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("hh")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+        builder.setTitle("비밀번호 설정")
+                .setMessage("비밀번호를 입력하세요.")
+                .setPositiveButton("저장", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         listener.onPositiveButtonClick();
                     }
                 })
-                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         listener.onNegativeButtonClick();

@@ -1,7 +1,10 @@
 package com.example.ama;
 
+import android.graphics.drawable.Drawable;
+
 public class AddAppNote {
     int _id;
+    //Drawable selectedAppIcon;
     String selectedAppIcon;
     String selectedAppName;
     String selectedAppFunc;

@@ -10,14 +10,13 @@ import android.os.Parcelable;
 public class InstalledAppNote implements Parcelable {
 
     int _id;
+    String installedAppPackname;
     Drawable installedAppIcon;
     String installedAppName;
 
-    public InstalledAppNote() {
-    }
-
-    public InstalledAppNote(int _id, Drawable appIcon, String appName) {
+    public InstalledAppNote(int _id, String packname, Drawable appIcon, String appName) {
         this._id = _id;
+        this.installedAppPackname = packname;
         this.installedAppIcon = appIcon;
         this.installedAppName = appName;
     }
@@ -36,21 +35,23 @@ public class InstalledAppNote implements Parcelable {
         this._id = _id;
     }
 
+    public String getInstalledAppPackname() { return this.installedAppPackname; }
+
+    public void setInstalledAppPackname(String appPackname) { this.installedAppPackname = appPackname; }
+
     public String getInstalledAppName() {
-        return installedAppName;
+        return this.installedAppName;
     }
 
-    public void setInstalledAppName(String AppName) {
-        this.installedAppName = AppName;
+    public void setInstalledAppName(String appName) {
+        this.installedAppName = appName;
     }
 
     public Drawable getInstalledAppIcon() {
-        return installedAppIcon;
+        return this.installedAppIcon;
     }
 
-    public void setInstalledAppIcon(Drawable AppIcon) {
-        this.installedAppIcon = AppIcon;
-    }
+    public void setInstalledAppIcon(Drawable appIcon) { this.installedAppIcon = appIcon; }
 
     @Override
     public int describeContents() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,16 +53,18 @@ public class Fragment2InstalledAppList extends Fragment {
         List<ResolveInfo> resolveInfos = pm.queryIntentActivities(mainIntent, 0);
 
         int id = 0;
+        String appPackname;
         Drawable appIcon;
-        String appName = "";
+        String appName;
 
         //for(ApplicationInfo appInfo : packages) {
         for(ResolveInfo resInfo : resolveInfos) {
 
+            appPackname = resInfo.activityInfo.applicationInfo.packageName;
             appIcon = resInfo.loadIcon(pm);
             appName = resInfo.loadLabel(pm).toString();
 
-            installedAppNoteAdapter.addItem(new InstalledAppNote(id, appIcon, appName));
+            installedAppNoteAdapter.addItem(new InstalledAppNote(id, appPackname, appIcon, appName));
             id++;
         }
 
