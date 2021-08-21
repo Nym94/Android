@@ -1,14 +1,22 @@
 package com.example.ama;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -18,9 +26,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.accessibilityservice.AccessibilityServiceInfoCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import java.util.List;
 
 public class Fragment3MainMenu extends Fragment {
 
@@ -59,12 +70,12 @@ public class Fragment3MainMenu extends Fragment {
         LinearLayout layout_setPassword = rootView.findViewById(R.id.layout_set_password);
         Switch switch_setPassword = rootView.findViewById(R.id.switch_set_password);
 
-        AccessibilityService serviceAppClickListener = new ServiceAppClickListener();
-
         layout_setPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "set password", Toast.LENGTH_LONG).show();
+                ServiceAppClickListener serviceAppClickListener = ServiceAppClickListener.getSharedInstance();
+                serviceAppClickListener.setSelectedAppPackagename(selectedAppInfo.installedAppPackname);
             }
         });
 
@@ -78,18 +89,16 @@ public class Fragment3MainMenu extends Fragment {
                         @Override
                         public void onPositiveButtonClick() {
 
-
-                            Intent intentForService = new Intent();
-                            intentForService.putExtra("selectedAppPackageName", selectedAppInfo);
-
-                            serviceAppClickListener.startService(intentForService);
+                            if(!checkAccessibilityPermissions()) {
+                                setAccessibilityPermissions();
+                            }
                         }
 
                         @Override
                         public void onNegativeButtonClick() {
                             Intent intent = new Intent();
 
-                            serviceAppClickListener.stopService(intent);
+                            //serviceAppClickListener.stopService(intent);
 
                             switch_setPassword.setChecked(false);
                         }
@@ -102,5 +111,34 @@ public class Fragment3MainMenu extends Fragment {
                 }
             }
         });
+    }
+
+    public boolean checkAccessibilityPermissions() {
+        AccessibilityManager accessibilityManager = (AccessibilityManager)getActivity().getSystemService(Context.ACCESSIBILITY_SERVICE);
+
+        List<AccessibilityServiceInfo> list =
+                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+
+        Log.d("service_test", "size : " + list.size());
+        for(int i = 0; i < list.size(); i++){
+            AccessibilityServiceInfo info = list.get(i);
+            if(info.getResolveInfo().serviceInfo.packageName.equals(getActivity().getApplication().getPackageName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setAccessibilityPermissions(){
+        AlertDialog.Builder permissionDialog = new AlertDialog.Builder(getContext());
+        permissionDialog.setTitle("접근성 권한 설정");
+        permissionDialog.setMessage("앱을 사용하기 위해 접근성 권한이 필요합니다.");
+        permissionDialog.setPositiveButton("허용", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                return;
+            }
+        }).create().show();
     }
 }
