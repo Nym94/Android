@@ -10,13 +10,13 @@ import android.os.Parcelable;
 public class InstalledAppNote implements Parcelable {
 
     int _id;
-    String installedAppPackname;
+    String installedAppPackageName;
     Drawable installedAppIcon;
     String installedAppName;
 
-    public InstalledAppNote(int _id, String packname, Drawable appIcon, String appName) {
+    public InstalledAppNote(int _id, String packageName, Drawable appIcon, String appName) {
         this._id = _id;
-        this.installedAppPackname = packname;
+        this.installedAppPackageName = packageName;
         this.installedAppIcon = appIcon;
         this.installedAppName = appName;
     }
@@ -35,9 +35,9 @@ public class InstalledAppNote implements Parcelable {
         this._id = _id;
     }
 
-    public String getInstalledAppPackname() { return this.installedAppPackname; }
+    public String getInstalledAppPackname() { return this.installedAppPackageName; }
 
-    public void setInstalledAppPackname(String appPackname) { this.installedAppPackname = appPackname; }
+    public void setInstalledAppPackname(String appPackageName) { this.installedAppPackageName = appPackageName; }
 
     public String getInstalledAppName() {
         return this.installedAppName;

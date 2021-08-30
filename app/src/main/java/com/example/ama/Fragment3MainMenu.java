@@ -1,13 +1,12 @@
 package com.example.ama;
 
-import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,8 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -26,14 +25,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.accessibilityservice.AccessibilityServiceInfoCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
 public class Fragment3MainMenu extends Fragment {
+
+    boolean _useAnyFunc = false;
 
     @Nullable
     @Override
@@ -55,6 +53,8 @@ public class Fragment3MainMenu extends Fragment {
 
         ImageView appIcon = rootView.findViewById(R.id.SelectedAppIcon2);
         TextView appName = rootView.findViewById(R.id.SelectedAppName2);
+        Button saveButton = rootView.findViewById(R.id.button_save);
+        Button cancelButton = rootView.findViewById(R.id.button_cancel);
 
         Bundle bundleFromFragment2 = getArguments();
         InstalledAppNote selectedAppInfo = (InstalledAppNote) bundleFromFragment2.getParcelable("selectedAppInfo");
@@ -63,6 +63,28 @@ public class Fragment3MainMenu extends Fragment {
         appName.setText(selectedAppInfo.getInstalledAppName());
 
         funcdef_SetPassword(rootView, selectedAppInfo);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ServiceAppClickListener serviceAppClickListener = ServiceAppClickListener.getSharedInstance();
+
+                if (_useAnyFunc == true) {
+                    serviceAppClickListener.addSelectedAppPackage(selectedAppInfo.installedAppPackageName);
+                }
+                else if (_useAnyFunc == false) {
+                    serviceAppClickListener.removeSelectedAppPackage(selectedAppInfo.installedAppName);
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // use SharedPreference
+            }
+        });
     }
 
     public void funcdef_SetPassword(ViewGroup rootView, InstalledAppNote selectedAppInfo) {
@@ -74,8 +96,6 @@ public class Fragment3MainMenu extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "set password", Toast.LENGTH_LONG).show();
-                ServiceAppClickListener serviceAppClickListener = ServiceAppClickListener.getSharedInstance();
-                serviceAppClickListener.setSelectedAppPackagename(selectedAppInfo.installedAppPackname);
             }
         });
 
@@ -96,18 +116,15 @@ public class Fragment3MainMenu extends Fragment {
 
                         @Override
                         public void onNegativeButtonClick() {
-                            Intent intent = new Intent();
-
-                            //serviceAppClickListener.stopService(intent);
-
                             switch_setPassword.setChecked(false);
                         }
                     });
                     dialogSAP.show(getActivity().getSupportFragmentManager(), "setAppPassword");
+                    _useAnyFunc = true;
                 }
 
                 if (switch_setPassword.isChecked() == false) {
-
+                    _useAnyFunc = false;
                 }
             }
         });
