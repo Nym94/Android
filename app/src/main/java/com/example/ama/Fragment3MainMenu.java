@@ -104,22 +104,23 @@ public class Fragment3MainMenu extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (switch_setPassword.isChecked() == true) {
                     // Show the dialog for set the app's password
-                    DialogSetAppPassword dialogSAP = new DialogSetAppPassword();
-                    dialogSAP.setOnDialogButtonClickListener(new OnSetPasswordButtonClickListener() {
+                    AlertDialog.Builder dialogSetPassword = new AlertDialog.Builder(getActivity());
+                    dialogSetPassword.setTitle("비밀번호 설정").setMessage("비밀번호를 설정하세요.")
+                    .setPositiveButton("저장", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onPositiveButtonClick() {
+                        public void onClick(DialogInterface dialog, int which) {
 
-                            if(!checkAccessibilityPermissions()) {
-                                setAccessibilityPermissions();
-                            }
+
                         }
-
+                    })
+                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onNegativeButtonClick() {
-                            switch_setPassword.setChecked(false);
+                        public void onClick(DialogInterface dialog, int which) {
+
                         }
                     });
-                    dialogSAP.show(getActivity().getSupportFragmentManager(), "setAppPassword");
+
+                    dialogSetPassword.show();
                     _useAnyFunc = true;
                 }
 
@@ -128,34 +129,5 @@ public class Fragment3MainMenu extends Fragment {
                 }
             }
         });
-    }
-
-    public boolean checkAccessibilityPermissions() {
-        AccessibilityManager accessibilityManager = (AccessibilityManager)getActivity().getSystemService(Context.ACCESSIBILITY_SERVICE);
-
-        List<AccessibilityServiceInfo> list =
-                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-
-        Log.d("service_test", "size : " + list.size());
-        for(int i = 0; i < list.size(); i++){
-            AccessibilityServiceInfo info = list.get(i);
-            if(info.getResolveInfo().serviceInfo.packageName.equals(getActivity().getApplication().getPackageName())){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setAccessibilityPermissions(){
-        AlertDialog.Builder permissionDialog = new AlertDialog.Builder(getContext());
-        permissionDialog.setTitle("접근성 권한 설정");
-        permissionDialog.setMessage("앱을 사용하기 위해 접근성 권한이 필요합니다.");
-        permissionDialog.setPositiveButton("허용", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                return;
-            }
-        }).create().show();
     }
 }
