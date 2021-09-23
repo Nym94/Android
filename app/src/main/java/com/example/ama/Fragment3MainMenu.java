@@ -1,22 +1,19 @@
 package com.example.ama;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -26,12 +23,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import java.util.List;
+import androidx.fragment.app.FragmentTransaction;
 
 public class Fragment3MainMenu extends Fragment {
 
     boolean _useAnyFunc = false;
+    String _appPassword = "";
 
     @Nullable
     @Override
@@ -62,72 +59,127 @@ public class Fragment3MainMenu extends Fragment {
         appIcon.setImageDrawable(selectedAppInfo.getInstalledAppIcon());
         appName.setText(selectedAppInfo.getInstalledAppName());
 
-        funcdef_SetPassword(rootView, selectedAppInfo);
+        //For set password
+        LinearLayout layout_setPassword = rootView.findViewById(R.id.layout_set_password);
+        Switch switch_setPassword = rootView.findViewById(R.id.switch_setPassword);
+
+        //Initialize to the previous set value using SharedPreference
+        SharedPreferences shPref = getActivity().getSharedPreferences("packageNamePref", Activity.MODE_PRIVATE);
+
+        if (shPref.getBoolean(selectedAppInfo.appPackageName + "_pwState", false)) {
+            switch_setPassword.setChecked(true);
+        }
+
+        layout_setPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                func_setPassword(rootView);
+            }
+        });
+
+        switch_setPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (switch_setPassword.isChecked() == true) {
+                    switch_setPassword.setChecked(false);
+                    func_setPassword(rootView);
+                }
+                else {
+                    _appPassword = "";
+                }
+            }
+        });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ServiceAppClickEvent serviceAppClickEvent = ServiceAppClickEvent.getSharedInstance();
 
-                ServiceAppClickListener serviceAppClickListener = ServiceAppClickListener.getSharedInstance();
+                serviceAppClickEvent.addSelectedAppPackage(selectedAppInfo.appPackageName, _appPassword);
 
-                if (_useAnyFunc == true) {
-                    serviceAppClickListener.addSelectedAppPackage(selectedAppInfo.installedAppPackageName);
-                }
-                else if (_useAnyFunc == false) {
-                    serviceAppClickListener.removeSelectedAppPackage(selectedAppInfo.installedAppName);
-                }
+                // Change to fragment1, and send "item" of fragment3(App's information, Function)
+                Fragment fragment1 = new Fragment1AddApp();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+                Bundle bundleToFragment3 = new Bundle();
+                //bundleToFragment3.putParcelable("selectedAppInfo", item);
+
+                fragment1.setArguments(bundleToFragment3);
+
+                transaction.replace(R.id.container, fragment1);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.commit();
             }
         });
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 변경된 사항을 저장 안하겠습니? (Y/N)
                 // use SharedPreference
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+
+                    }
+                });
+                alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                alert.setMessage("변경된 사항을 저장 안하겠습니까?");
+                alert.show();
             }
         });
     }
 
-    public void funcdef_SetPassword(ViewGroup rootView, InstalledAppNote selectedAppInfo) {
+    public void func_setPassword(ViewGroup rootView) {
 
-        LinearLayout layout_setPassword = rootView.findViewById(R.id.layout_set_password);
-        Switch switch_setPassword = rootView.findViewById(R.id.switch_set_password);
+        AlertDialog.Builder dialogSetPassword = new AlertDialog.Builder(getContext());
+        dialogSetPassword.setContentView(R.layout.dialog_set_password);
 
-        layout_setPassword.setOnClickListener(new View.OnClickListener() {
+        TextView textPassword = dialogSetPassword.findViewById(R.id.editText_password);
+        TextView textConfirmPassword = dialogSetPassword.findViewById(R.id.editText_confirmPassword);
+
+        Button acceptButton = dialogSetPassword.findViewById(R.id.button_acceptSetPassword);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "set password", Toast.LENGTH_LONG).show();
+                Switch switch_setPassword = rootView.findViewById(R.id.switch_setPassword);
+                String pw1 = textPassword.getText().toString();
+                String pw2 = textConfirmPassword.getText().toString();
+
+                if (pw1.equals("") || pw2.equals("")) {
+                    Toast.makeText(getContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (!pw1.equals(pw2)) {
+                    Toast.makeText(getContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                else {
+                    _appPassword = pw1;
+                    switch_setPassword.setChecked(true);
+                    Toast.makeText(getContext(), "비밀번호가 설정되었습니다.", Toast.LENGTH_LONG).show();
+                    dialogSetPassword.dismiss();
+                }
+
             }
         });
 
-        switch_setPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        Button cancelButton = dialogSetPassword.findViewById(R.id.button_cancelSetPassword);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (switch_setPassword.isChecked() == true) {
-                    // Show the dialog for set the app's password
-                    AlertDialog.Builder dialogSetPassword = new AlertDialog.Builder(getActivity());
-                    dialogSetPassword.setTitle("비밀번호 설정").setMessage("비밀번호를 설정하세요.")
-                    .setPositiveButton("저장", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-
-                        }
-                    })
-                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-
-                    dialogSetPassword.show();
-                    _useAnyFunc = true;
-                }
-
-                if (switch_setPassword.isChecked() == false) {
-                    _useAnyFunc = false;
-                }
+            public void onClick(View v) {
+                dialogSetPassword.dismiss();
             }
         });
+
+        dialogSetPassword.show();
     }
 }

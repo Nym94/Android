@@ -10,15 +10,15 @@ import android.os.Parcelable;
 public class InstalledAppNote implements Parcelable {
 
     int _id;
-    String installedAppPackageName;
-    Drawable installedAppIcon;
-    String installedAppName;
+    String appPackageName;
+    Drawable appIcon;
+    String appName;
 
     public InstalledAppNote(int _id, String packageName, Drawable appIcon, String appName) {
         this._id = _id;
-        this.installedAppPackageName = packageName;
-        this.installedAppIcon = appIcon;
-        this.installedAppName = appName;
+        this.appPackageName = packageName;
+        this.appIcon = appIcon;
+        this.appName = appName;
     }
 
     /* // Necessary?
@@ -35,23 +35,23 @@ public class InstalledAppNote implements Parcelable {
         this._id = _id;
     }
 
-    public String getInstalledAppPackname() { return this.installedAppPackageName; }
+    public String getInstalledAppPackname() { return this.appPackageName; }
 
-    public void setInstalledAppPackname(String appPackageName) { this.installedAppPackageName = appPackageName; }
+    public void setInstalledAppPackname(String appPackageName) { this.appPackageName = appPackageName; }
 
     public String getInstalledAppName() {
-        return this.installedAppName;
+        return this.appName;
     }
 
     public void setInstalledAppName(String appName) {
-        this.installedAppName = appName;
+        this.appName = appName;
     }
 
     public Drawable getInstalledAppIcon() {
-        return this.installedAppIcon;
+        return this.appIcon;
     }
 
-    public void setInstalledAppIcon(Drawable appIcon) { this.installedAppIcon = appIcon; }
+    public void setInstalledAppIcon(Drawable appIcon) { this.appIcon = appIcon; }
 
     @Override
     public int describeContents() {
@@ -62,9 +62,9 @@ public class InstalledAppNote implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(_id);
-        Bitmap bitmap = (Bitmap)((BitmapDrawable) installedAppIcon).getBitmap();
+        Bitmap bitmap = (Bitmap)((BitmapDrawable) appIcon).getBitmap();
         dest.writeParcelable(bitmap, flags);
-        dest.writeString(installedAppName);
+        dest.writeString(appName);
     }
 
     /* // Necessary?

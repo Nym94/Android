@@ -5,15 +5,15 @@ import android.graphics.drawable.Drawable;
 public class AddAppNote {
     int _id;
     //Drawable selectedAppIcon;
-    String selectedAppIcon;
-    String selectedAppName;
-    String selectedAppFunc;
+    String appIcon;
+    String appName;
+    String appFunc;
 
     public AddAppNote(int _id, String appIcon, String appName, String appFunc) {
         this._id = _id;
-        this.selectedAppIcon = appIcon;
-        this.selectedAppName = appName;
-        this.selectedAppFunc = appFunc;
+        this.appIcon = appIcon;
+        this.appName = appName;
+        this.appFunc = appFunc;
     }
 
     public int get_id() {
@@ -25,26 +25,26 @@ public class AddAppNote {
     }
 
     public String getSelectedAppIcon() {
-        return selectedAppIcon;
+        return appIcon;
     }
 
     public void setSelectedAppIcon(String appIcon) {
-        this.selectedAppIcon = appIcon;
+        this.appIcon = appIcon;
     }
 
     public String getSelectedAppName() {
-        return selectedAppName;
+        return appName;
     }
 
     public void setSelectedAppName(String appName) {
-        this.selectedAppName = appName;
+        this.appName = appName;
     }
 
     public String getSelectedAppFunc() {
-        return selectedAppFunc;
+        return appFunc;
     }
 
     public void setSelectedAppFunc(String appFunc) {
-        this.selectedAppFunc = appFunc;
+        this.appFunc = appFunc;
     }
 }
