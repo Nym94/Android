@@ -25,9 +25,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.zip.Inflater;
+
 public class Fragment3MainMenu extends Fragment {
 
-    boolean _useAnyFunc = false;
     String _appPassword = "";
 
     @Nullable
@@ -93,54 +94,67 @@ public class Fragment3MainMenu extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServiceAppClickEvent serviceAppClickEvent = ServiceAppClickEvent.getSharedInstance();
 
-                serviceAppClickEvent.addSelectedAppPackage(selectedAppInfo.appPackageName, _appPassword);
+                if (false) {
+                    ServiceAppClickEvent serviceAppClickEvent = ServiceAppClickEvent.getSharedInstance();
 
-                // Change to fragment1, and send "item" of fragment3(App's information, Function)
-                Fragment fragment1 = new Fragment1AddApp();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    serviceAppClickEvent.addSelectedAppPackage(selectedAppInfo.appPackageName, _appPassword);
 
-                Bundle bundleToFragment3 = new Bundle();
-                //bundleToFragment3.putParcelable("selectedAppInfo", item);
+                    // Move to fragment1, and send "item" of fragment3(App's information, Function)
+                    Fragment fragment1 = new Fragment1AddApp();
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-                fragment1.setArguments(bundleToFragment3);
+                    Bundle bundleToFragment3 = new Bundle();
+                    bundleToFragment3.putParcelable("selectedAppInfo", selectedAppInfo);
 
-                transaction.replace(R.id.container, fragment1);
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                transaction.commit();
+                    fragment1.setArguments(bundleToFragment3);
+
+                    transaction.replace(R.id.container, fragment1);
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    transaction.commit();
+
+                    Toast.makeText(getContext(), "저장 완료", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+
+                    dialogBuilder.setMessage("변경된 사항이 없습니다.")
+                            .setPositiveButton("확인", null);
+                    dialogBuilder.show();
+                }
             }
         });
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 변경된 사항을 저장 안하겠습니? (Y/N)
-                // use SharedPreference
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                if (true) {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
-
-
-                    }
-                });
-                alert.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                alert.setMessage("변경된 사항을 저장 안하겠습니까?");
-                alert.show();
+                    dialogBuilder.setMessage("변경된 사항을 저장 안하겠습니까?")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getActivity().getSupportFragmentManager().popBackStack();
+                                }
+                            })
+                            .setNegativeButton("취소", null);
+                    dialogBuilder.show();
+                }
+                else {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         });
     }
 
     public void func_setPassword(ViewGroup rootView) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_set_password, null);
 
-        AlertDialog.Builder dialogSetPassword = new AlertDialog.Builder(getContext());
-        dialogSetPassword.setContentView(R.layout.dialog_set_password);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        dialogBuilder.setView(dialogView);
+
+        AlertDialog dialogSetPassword = dialogBuilder.create();
 
         TextView textPassword = dialogSetPassword.findViewById(R.id.editText_password);
         TextView textConfirmPassword = dialogSetPassword.findViewById(R.id.editText_confirmPassword);
@@ -168,7 +182,6 @@ public class Fragment3MainMenu extends Fragment {
                     Toast.makeText(getContext(), "비밀번호가 설정되었습니다.", Toast.LENGTH_LONG).show();
                     dialogSetPassword.dismiss();
                 }
-
             }
         });
 

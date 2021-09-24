@@ -80,7 +80,6 @@ public class Fragment2InstalledAppList extends Fragment {
 
                 // Change to fragment3, and send "item" of fragment2
                 Fragment fragment3 = new Fragment3MainMenu();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
                 //Intent intentToFragment3 = new Intent();
                 //intentToFragment3.putExtra("selectedAppInfo", item);
@@ -88,8 +87,9 @@ public class Fragment2InstalledAppList extends Fragment {
                 Bundle bundleToFragment3 = new Bundle();
                 //bundleForFragment3.putParcelable("selectedAppInfo", intentToFragment3.getParcelableExtra("selectedAppInfo"));
                 bundleToFragment3.putParcelable("selectedAppInfo", item);
-
                 fragment3.setArguments(bundleToFragment3);
+
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.container, fragment3);
                 transaction.addToBackStack(null);
