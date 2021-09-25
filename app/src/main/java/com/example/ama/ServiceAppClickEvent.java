@@ -2,8 +2,11 @@ package com.example.ama;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -76,14 +79,23 @@ public class ServiceAppClickEvent extends AccessibilityService {
             while(iter.hasNext())
                 Log.d("packageName", iter.next().toString());
             if (_appPackageNameSet.contains(event.getPackageName().toString())) {
-                Log.d("packageName", "Done~~~~~~~~~!!");
-                Toast.makeText(getApplicationContext(), "Executed app I'm select", Toast.LENGTH_LONG).show();
+                SharedPreferences shPref = getSharedPreferences("packageNamePref", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor shPrefEdit = shPref.edit();
+
+                if (shPref.getBoolean(event.getPackageName().toString() + "_pwState", false)) {
+                    checkPassword();
+                }
             }
         }
     }
 
     public static ServiceAppClickEvent getSharedInstance() {
         return _sharedIntanceForSAC;
+    }
+
+    public void checkPassword() {
+        LayoutInflater inflater = (LayoutInflater) Context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
     }
 
     @Override

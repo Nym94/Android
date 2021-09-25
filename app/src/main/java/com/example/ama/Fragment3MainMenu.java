@@ -66,8 +66,10 @@ public class Fragment3MainMenu extends Fragment {
 
         //Initialize to the previous set value using SharedPreference
         SharedPreferences shPref = getActivity().getSharedPreferences("packageNamePref", Activity.MODE_PRIVATE);
+        boolean prevState[] = { false };
+        prevState[0] = shPref.getBoolean(selectedAppInfo.appPackageName + "_pwState", false);
 
-        if (shPref.getBoolean(selectedAppInfo.appPackageName + "_pwState", false)) {
+        if (prevState[0]) {
             switch_setPassword.setChecked(true);
         }
 
@@ -94,21 +96,33 @@ public class Fragment3MainMenu extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Check if the any function's state has changed.
+                boolean checkState = false;
+                boolean curState[] = { false };
+                curState[0] = switch_setPassword.isChecked();
 
-                if (false) {
+                for (int i = 0; i < curState.length; i++) {
+                    if (curState[i] == true) {
+                        checkState = true;
+                        break;
+                    }
+                }
+
+                // For send "item" of fragment3(App's information, Function)
+                Fragment fragment1 = new Fragment1AddApp();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+                Bundle bundleToFragment3 = new Bundle();
+                bundleToFragment3.putParcelable("selectedAppInfo", selectedAppInfo);
+
+                fragment1.setArguments(bundleToFragment3);
+
+                if (checkState) {
+                    // Send to service for selected app's info.
                     ServiceAppClickEvent serviceAppClickEvent = ServiceAppClickEvent.getSharedInstance();
-
                     serviceAppClickEvent.addSelectedAppPackage(selectedAppInfo.appPackageName, _appPassword);
 
-                    // Move to fragment1, and send "item" of fragment3(App's information, Function)
-                    Fragment fragment1 = new Fragment1AddApp();
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-
-                    Bundle bundleToFragment3 = new Bundle();
-                    bundleToFragment3.putParcelable("selectedAppInfo", selectedAppInfo);
-
-                    fragment1.setArguments(bundleToFragment3);
-
+                    // Move to fragment1
                     transaction.replace(R.id.container, fragment1);
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     transaction.commit();
@@ -118,8 +132,19 @@ public class Fragment3MainMenu extends Fragment {
                 else {
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
-                    dialogBuilder.setMessage("변경된 사항이 없습니다.")
-                            .setPositiveButton("확인", null);
+                    dialogBuilder.setMessage("체크된 항목이 없습니다. 그대로 진행하시겠습니까?")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Move to fragment1
+                                    transaction.replace(R.id.container, fragment1);
+                                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                                    transaction.commit();
+
+                                    Toast.makeText(getContext(), "저장 완료", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("취소", null);
                     dialogBuilder.show();
                 }
             }
@@ -128,7 +153,19 @@ public class Fragment3MainMenu extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (true) {
+                // Check if the any function's state has changed.
+                boolean checkChangeState = false;
+                boolean curState[] = { false };
+                curState[0] = switch_setPassword.isChecked();
+
+                for (int i = 0; i < curState.length; i++) {
+                    if (curState[i] != prevState[i]) {
+                        checkChangeState = true;
+                        break;
+                    }
+                }
+
+                if (checkChangeState) {
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
 
                     dialogBuilder.setMessage("변경된 사항을 저장 안하겠습니까?")
@@ -156,13 +193,13 @@ public class Fragment3MainMenu extends Fragment {
 
         AlertDialog dialogSetPassword = dialogBuilder.create();
 
-        TextView textPassword = dialogSetPassword.findViewById(R.id.editText_password);
-        TextView textConfirmPassword = dialogSetPassword.findViewById(R.id.editText_confirmPassword);
-
-        Button acceptButton = dialogSetPassword.findViewById(R.id.button_acceptSetPassword);
+        Button acceptButton = dialogView.findViewById(R.id.button_acceptSetPassword);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TextView textPassword = dialogView.findViewById(R.id.editText_password);
+                TextView textConfirmPassword = dialogView.findViewById(R.id.editText_confirmPassword);
+
                 Switch switch_setPassword = rootView.findViewById(R.id.switch_setPassword);
                 String pw1 = textPassword.getText().toString();
                 String pw2 = textConfirmPassword.getText().toString();
@@ -185,7 +222,7 @@ public class Fragment3MainMenu extends Fragment {
             }
         });
 
-        Button cancelButton = dialogSetPassword.findViewById(R.id.button_cancelSetPassword);
+        Button cancelButton = dialogView.findViewById(R.id.button_cancelSetPassword);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
