@@ -2,18 +2,14 @@ package com.example.ama;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -24,8 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import java.util.zip.Inflater;
 
 public class Fragment3MainMenu extends Fragment {
 
@@ -41,7 +35,8 @@ public class Fragment3MainMenu extends Fragment {
         return rootView;
     }
 
-    /* Only use basic construct in fragment, because overloaded construct not guaranteed to call.
+    /* Fragment의 생성자는 기본 생성자만 사용해야한다. 왜냐하면 오버로드된 생성자가 불려진다는 보장이 없다.
+    // Only use basic construct in fragment, because overloaded construct not guaranteed to call.
     public Fragment3MainMenu(InstalledAppNote selectedAppInfo) {
         this.selectedAppInfo = selectedAppInfo;
     }
@@ -117,9 +112,10 @@ public class Fragment3MainMenu extends Fragment {
 
                 fragment1.setArguments(bundleToFragment3);
 
+                ServiceAppClickEvent serviceAppClickEvent = ServiceAppClickEvent.getSharedInstance();
+
                 if (checkState) {
                     // Send to service for selected app's info.
-                    ServiceAppClickEvent serviceAppClickEvent = ServiceAppClickEvent.getSharedInstance();
                     serviceAppClickEvent.addSelectedAppPackage(selectedAppInfo.appPackageName, _appPassword);
 
                     // Move to fragment1
@@ -136,6 +132,8 @@ public class Fragment3MainMenu extends Fragment {
                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    serviceAppClickEvent.removeSelectedAppPackage(selectedAppInfo.appPackageName);
+
                                     // Move to fragment1
                                     transaction.replace(R.id.container, fragment1);
                                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -210,7 +208,7 @@ public class Fragment3MainMenu extends Fragment {
                 }
 
                 if (!pw1.equals(pw2)) {
-                    Toast.makeText(getContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "비밀번호가 동일하지 않습니다.", Toast.LENGTH_LONG).show();
                     return;
                 }
                 else {

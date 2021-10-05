@@ -8,7 +8,8 @@
     android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginBottom="10dp"
-    app:cardBackgroundColor="#FFFFFFFF"
+    app:cardBackgroundColor="#00FFFFFF"
+    android:background="@android:color/transparent"
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
@@ -22,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/empty_app"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <TextView
                 android:id="@+id/textView1"
@@ -42,11 +44,11 @@
         android:id="@+id/setAppLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/set_app"
         android:orientation="horizontal"
         android:visibility="visible">
 
         <LinearLayout
+            android:background="@drawable/set_app"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">

@@ -1,7 +1,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <solid
-        android:color="#00ff0000" /> //배경색
+        android:color="#00ffffff" /> //배경색
 
     <stroke
         android:width="5dp"

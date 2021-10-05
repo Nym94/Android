@@ -2,12 +2,20 @@ package com.example.ama;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import java.util.HashSet;
@@ -33,7 +41,7 @@ public class ServiceAppClickEvent extends AccessibilityService {
             shPrefEdit.remove(appPackageName + "_pw");
             shPrefEdit.putString(appPackageName + "_pw", appPassword);
             shPrefEdit.putBoolean(appPackageName + "_pwState", true);
-            Log.d("packageName", "Enter~~");
+            Log.d("packageName", "PW : " + appPassword);
         }
         else {
             shPrefEdit.putBoolean(appPackageName + "_pwState", false);
@@ -48,6 +56,9 @@ public class ServiceAppClickEvent extends AccessibilityService {
         if (_appPackageNameSet.contains(appPackageName)) {
             _appPackageNameSet.remove(appPackageName);
             shPrefEdit.putStringSet("selectedAppPackage", _appPackageNameSet);
+
+            shPrefEdit.remove(appPackageName + "_pw");
+            shPrefEdit.remove(appPackageName + "_pwState");
         }
 
         shPrefEdit.commit();
@@ -75,15 +86,43 @@ public class ServiceAppClickEvent extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.d("packageName", "event.getPackageName(onAccessibilityEvent) : " + event.getPackageName());
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            Iterator iter = _appPackageNameSet.iterator();
-            while(iter.hasNext())
-                Log.d("packageName", iter.next().toString());
+//            Iterator iter = _appPackageNameSet.iterator();
+//            while(iter.hasNext())
+//                Log.d("packageName", iter.next().toString());
             if (_appPackageNameSet.contains(event.getPackageName().toString())) {
                 SharedPreferences shPref = getSharedPreferences("packageNamePref", Activity.MODE_PRIVATE);
-                SharedPreferences.Editor shPrefEdit = shPref.edit();
 
+                // Priority : Password < Time limit
                 if (shPref.getBoolean(event.getPackageName().toString() + "_pwState", false)) {
-                    checkPassword();
+                    gotoHome();
+
+                    Intent intentToDialog = new Intent(this, DialogCheckPassword.class);
+                    intentToDialog.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intentToDialog.putExtra("appPackageName", event.getPackageName().toString());
+                    intentToDialog.putExtra("appPassword", shPref.getString(event.getPackageName().toString() + "_pw", ""));
+                    startActivity(intentToDialog);
+
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            DialogCheckPassword dialogCheckPassword = DialogCheckPassword.getSharedInstance();
+//
+//                            dialogCheckPassword.acceptButtonClickListener(new OnItemClickListener() {
+//                                @Override
+//                                public void onItemClick(int position) {
+//
+//                                  dialogCheckPassword.finish();
+//                                }
+//                            });
+//                            dialogCheckPassword.cancelButtonClickListener(new OnItemClickListener() {
+//                                @Override
+//                                public void onItemClick(int position) {
+//                                    dialogCheckPassword.finish();
+//                                }
+//                            });
+//                        }
+//                    }, 3000);
                 }
             }
         }
@@ -93,9 +132,15 @@ public class ServiceAppClickEvent extends AccessibilityService {
         return _sharedIntanceForSAC;
     }
 
-    public void checkPassword() {
-        LayoutInflater inflater = (LayoutInflater) Context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+    private void gotoHome(){
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.MAIN");
+        intent.addCategory("android.intent.category.HOME");
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                | Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        startActivity(intent);
     }
 
     @Override
